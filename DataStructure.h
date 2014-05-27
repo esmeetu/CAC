@@ -43,18 +43,12 @@ typedef struct scrPoint
 	int scrY;
 }scrPoint;		
 
-//程序运行状态
-enum STATUS {CLOSED, OPENED};
-enum STATUS MAIN_STATUS = CLOSED;
-enum STATUS CASE1_STATUS = CLOSED;
-enum STATUS CASE2_STATUS = CLOSED;
-enum STATUS CASE3_STATUS = CLOSED;
-enum STATUS CASE4_STATUS = CLOSED;
-enum STATUS CASE5_STATUS = CLOSED;
-enum STATUS CASE6_STATUS = CLOSED;
-enum STATUS CASE7_STATUS = CLOSED;
-enum STATUS CASE8_STATUS = CLOSED;
-
+//矩阵
+typedef struct Matrix
+{
+	int row, col;
+	double *data;
+}Matrix;
 
 //点和线侧位的关系outLine：线外 onLine线上
 enum boolpol { outLine, onLine };

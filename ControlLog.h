@@ -1,3 +1,17 @@
+
+//程序运行状态
+enum STATUS {CLOSED, OPENED};
+enum STATUS MAIN_STATUS = CLOSED;
+enum STATUS CASE1_STATUS = CLOSED;
+enum STATUS CASE2_STATUS = CLOSED;
+enum STATUS CASE3_STATUS = CLOSED;
+enum STATUS CASE4_STATUS = CLOSED;
+enum STATUS CASE5_STATUS = CLOSED;
+enum STATUS CASE6_STATUS = CLOSED;
+enum STATUS CASE7_STATUS = CLOSED;
+enum STATUS CASE8_STATUS = CLOSED;
+enum STATUS CASE9_STATUS = CLOSED;
+
 /*
  *功能控制语句
 */
@@ -10,6 +24,7 @@ void init_Control5();
 void init_Control6();
 void init_Control7();
 void init_Control8();
+void init_Control9();
 
 //
 //功能控制部分
@@ -24,6 +39,7 @@ void init_Main() {
 	printf("\t6、	点线面关系\n");
 	printf("\t7、	读写BMP图片\n");
 	printf("\t8、	矢量数据压缩\n");
+	printf("\t9、	曲线拟合\n");
 	printf("\t0、	退出程序\n\n");
 	printf("----------------------------------------\n");
 	printf("请选择功能编号：");
@@ -114,4 +130,13 @@ void init_Control8() {
 	printf("-----------------------------\n");
 	printf("请选择操作编号：");
 	CASE8_STATUS = OPENED;
+}
+
+void init_Control9() {
+	printf("------------请选择-----------\n\n");
+	printf("\t1.曲线拟合\n");
+	printf("\t0.返回上一级\n\n");
+	printf("-----------------------------\n");
+	printf("请选择操作编号：");
+	CASE9_STATUS = OPENED;
 }

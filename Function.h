@@ -1,4 +1,4 @@
-#define  EYE_GRAPHICS
+#define  _EYE_GRAPHICS
 
 #include <graphics.h>
 #include <math.h>
@@ -87,6 +87,7 @@ pList delPoint(pList pl, int i);
 pList delPoints(pList pl, int pStart, int pEnd);
 pList dgls_pkf(pList pl, int start, int end, double d);
 int get_Max(pList pl, int start, int end, double d);
+int curveFit(pList pl, double t);
 
 
 //
@@ -884,12 +885,10 @@ int readBmpHead(FILE *fin) {
 	if(biBitCount == 8) {
 		printf("eight bits bmp！\n");
 		pColorTable = (colorTable*)malloc(sizeof(colorTable));
-		perror("提示");
 		if(!pColorTable) 
 		fread(pColorTable, sizeof(colorTable), 256, fin);
 		else printf("%d\n",sizeof(colorTable));
 		imgTemp = (unsigned char*)malloc(sizeof(char)*lineByte*BmpHeight);
-		perror("提示");
 		if(!imgTemp)
 		fread(imgTemp, 1, lineByte*BmpHeight, fin);
 		else printf("%lu\n",sizeof(char)*lineByte*BmpHeight);
@@ -1050,34 +1049,128 @@ Point getPoint(pList pl, int i) {
 	return pTemp ->p;
 }
 
-int** getRowCol(double **matrix1, double **matrix2, double **matrix) {
-	int rc[2][3];
-	int i, j;
-
-	while(matrix1+i++) {
-		while(*matrix1+j++);
-	}
-	rc[0][0] = i;
-	rc[0][1] = j;
-
-	printf("%d,%d\n", i, j);
-	scanf("%d",&i);
-	return (int **)rc;
-}
 
 //矩阵运算：加减乘除
-void matrixMultiply(double **matrix1, double **matrix2, double **matrix) {
+/* 矩阵转置 */
+void Matrix_Transpose(Matrix a, Matrix b)
+{
+	int i,j;
+	b.row = a.col;
+	b.col = a.row;
+	for(i = 0; i<b.row; i++)
+	{
+		for(j = 0;j<b.col;j++)
+		{
+			b.data[i*b.col+j] = a.data[j*b.row+i];
+		}
+	}
+}
+
+/*矩阵与数r相乘*/
+void Matrix_rMultiply(Matrix a, double r, Matrix b)
+{
+	int i;
+	b = a;
+	for(i = 0;i<b.row*b.col;i++)
+	{
+		b.data[i] = a.data[i] * r;
+	}
+}
+
+/* 矩阵相加 */
+void Matrix_Plus(Matrix a, Matrix b, Matrix c)
+{
+	int i;
+	c = a;
+	for(i = 0;i<c.row*c.col;i++)
+	{
+		c.data[i] = a.data[i] + b.data[i];
+	}
+}
+
+/* 矩阵相减 */
+void Matrix_Minus(Matrix a, Matrix b, Matrix c)
+{
+	int i;
+	c = a;
+	for(i = 0;i<c.row*c.col;i++)
+	{
+		c.data[i] = a.data[i] - b.data[i];
+	}
+}
+
+/* 显示矩阵 */
+void Matrix_Print(Matrix m) {
+	int i, j;
+	for (i = 0; i < m.row; i++) {
+		for (j = 0; j < m.col; j++) {
+			printf("%lf ", *(m.data + i * m.col + j));
+		}
+		printf("\n");
+	}
+}
+
+/* 矩阵相乘 */
+void Matrix_Multiply(Matrix a, Matrix b, Matrix c) {
+	int i, j, k;
+	c.row = a.row;
+	c.col = b.col;
+	double sum;
+
+	for (i = 0; i < c.row; ++i)
+	{
+		for (j = 0; j < c.col; ++j)
+		{
+			sum = 0.0;
+			for (k = 0; k < a.col; ++k)
+			{
+				sum +=  (*(a.data+i*a.col+k)) * (*(b.data+k*c.col+j));
+			}
+			*(c.data+i*c.col+j) = sum;
+		}
+	}
+}
+
+int curveFit(pList pl, double t) {
+
+	double xi, yi;
+	double x1, x2, x3, x4;
+	double y1, y2, y3, y4;
+	double i;
+
+	#ifdef EYE_GRAPHICS
+	initgraph(screenWidth, screenHeight); // 初始化
+	printf("eye graphics\n");
+	#else 
+	int gd = DETECT, gmode = 0;
+	initgraph(&gd, &gmode = 0);
+	printf("tc graphics\n");
+	#endif
+
+	if (get_Length(pl) < 5)
+	{
+		return -1;
+	}
+
+	x1 = pl ->next ->p.x;
+	x2 = pl ->next ->next ->p.x;
+	x3 = pl ->next ->next ->next ->p.x;
+	x4 = pl ->next ->next ->next ->next ->p.x;
 	
-}
+	y1 = pl ->next ->p.y;
+	y2 = pl ->next ->next ->p.y;
+	y3 = pl ->next ->next ->next ->p.y;
+	y4 = pl ->next ->next ->next ->next ->p.y;
 
-void matrixPlus(double **matrix1, double **matrix2, int m, int n) {
+	for (i = 0; i < t; i = i + t/1000)
+	{
+		xi = x2 - (x1 - x3) * i + 2 * (2 * x1 - 5 * x2 + 4 * x3 - x4) * i * i - 4 * (x1 - 3 * x2 + 3 * x3 - x4) * i * i * i;
+		yi = y2 - (y1 - y3) * i + 2 * (2 * y1 - 5 * y2 + 4 * y3 - y4) * i * i - 4 * (y1 - 3 * y2 + 3 * y3 - y4) * i * i * i;
+		// printf("%lf, %lf\n", xi, yi);
+		putpixel((int)(xi + 10), (int)(yi + 10), RED);	
+	}
 
-}
-
-void matrixMinus(double **matrix1, double **matrix2, int m, int n) {
-
-}
-
-void matrixDivide(double **matrix1, double **matrix2, int m, int n) {
-
+	getch();
+	closegraph();
+	return 1;
 }

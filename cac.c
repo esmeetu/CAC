@@ -529,6 +529,57 @@ int main() {
 
 				break;
 			}
+		//	功能：矩阵运算以及曲线拟合
+			case 9 : {
+				int n, createstyle;
+				pList pl;
+
+				do {
+					printf("创建新链表：\t0、返回上一级，1、从文件创建，2、根据大小创建\n"); 
+					scanf("%d",&createstyle);
+					if(createstyle == 0 ) break;
+					if(createstyle == 1) {
+						char filename[20];
+						FILE *fp;
+						printf("请输入所要打开的点文件及路径名:");
+						scanf("%s",filename);
+						if((fp=fopen(filename, "r")) == NULL) {
+							printf("未能打开文件！");
+							return 0;
+						}
+						pl = createPointList(fp);
+						break;
+					}
+					else if(createstyle == 2) {
+						printf("请输入所要创建链表大小：（如：10）"); 
+						scanf("%d",&n);
+						pl = creatNList(n);
+						break;
+					}
+					else printf("请重新选择：\n");
+				}while(createstyle);
+				if(createstyle == 0 ) break;
+
+				disPointList(pl);
+				
+				do {
+					init_Control9();
+					scanf("%d",&chosenNum);
+					switch(chosenNum) {
+						case 1 :
+							if(!curveFit(pl, 0.5))
+								printf("拟合失败！\n");
+							break;
+						case 0 :
+							CASE9_STATUS = CLOSED;
+							break;
+						default : 
+							printf("请重新选择功能！\n");
+					}
+				}while(CASE9_STATUS);
+
+				break;
+			}
 		//	功能：退出程序
 			case 0 :
 				MAIN_STATUS = CLOSED;
@@ -540,4 +591,48 @@ int main() {
 	}while(MAIN_STATUS);
 	exit(0);
 	return 0;
+}
+
+int curveFit(pList pl, double t) {
+
+	double xi, yi;
+	double x1, x2, x3, x4;
+	double y1, y2, y3, y4;
+	double i;
+
+	#ifdef EYE_GRAPHICS
+	initgraph(screenWidth, screenHeight); // 初始化
+	printf("eye graphics\n");
+	#else 
+	int gd = DETECT, gmode = 0;
+	initgraph(&gd, &gmode = 0);
+	printf("tc graphics\n");
+	#endif
+
+	if (get_Length(pl) < 5)
+	{
+		return -1;
+	}
+
+	x1 = pl ->next ->p.x;
+	x2 = pl ->next ->next ->p.x;
+	x3 = pl ->next ->next ->next ->p.x;
+	x4 = pl ->next ->next ->next ->next ->p.x;
+	
+	y1 = pl ->next ->p.y;
+	y2 = pl ->next ->next ->p.y;
+	y3 = pl ->next ->next ->next ->p.y;
+	y4 = pl ->next ->next ->next ->next ->p.y;
+
+	for (i = 0; i < t; i = i + t/1000)
+	{
+		xi = x2 - (x1 - x3) * i + 2 * (2 * x1 - 5 * x2 + 4 * x3 - x4) * i * i - 4 * (x1 - 3 * x2 + 3 * x3 - x4) * i * i * i;
+		yi = y2 - (y1 - y3) * i + 2 * (2 * y1 - 5 * y2 + 4 * y3 - y4) * i * i - 4 * (y1 - 3 * y2 + 3 * y3 - y4) * i * i * i;
+		// printf("%lf, %lf\n", xi, yi);
+		putpixel((int)(xi + 10), (int)(yi + 10), RED);	
+	}
+
+	getch();
+	closegraph();
+	return 1;
 }
